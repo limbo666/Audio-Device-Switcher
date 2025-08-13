@@ -1,0 +1,272 @@
+﻿<Window x:Class="AudioDeviceSwitcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Audio Device Switcher" Height="520" Width="800"
+        MinHeight="300" MinWidth="600"
+        Icon="/Resources/Icon.ico">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with subtle refresh icon -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Available Audio Devices" FontSize="14" FontWeight="Normal" 
+                       VerticalAlignment="Center" Foreground="#555"/>
+            
+            <!-- Subtle refresh icon with hover effect -->
+            <Button Name="RefreshIcon" Click="OnManualRefreshIcon_Click"
+                    Margin="8,0,0,0" 
+                    Background="Transparent" 
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    ToolTip="Refresh device list"
+                    Padding="4">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            CornerRadius="3" 
+                                            Padding="{TemplateBinding Padding}">
+                                        <TextBlock Text="🔄" FontSize="14" 
+                                                   Foreground="#666" 
+                                                   HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F0F0F0"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#E0E0E0"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        
+        <!-- Device list with larger rows for icons and both click modes -->
+        <ListView x:Name="AudioDevicesPanel" Grid.Row="1"
+                  MouseDoubleClick="OnAudioDevicesPanel_MouseDoubleClick"
+                  MouseLeftButtonUp="OnAudioDevicesPanel_MouseSingleClick"
+                  MouseRightButtonUp="OnAudioDevicesPanel_MouseRightClick"
+                  ItemsSource="{Binding AudioDeviceList}"
+                  SelectionMode="Single">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Margin" Value="2"/>
+                    <Setter Property="Padding" Value="8"/>
+                    <!-- Increased height for better icon display -->
+                    <Setter Property="MinHeight" Value="48"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsCurrentlyActive}" Value="True">
+                            <Setter Property="Background" Value="#E8F5E8"/>
+                            <Setter Property="BorderBrush" Value="#4CAF50"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F0F8FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Device Name" Width="350">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <!-- Device type icon with larger size -->
+                                    <TextBlock Text="{Binding DeviceTypeIcon}" 
+                                               FontSize="24" 
+                                               Margin="0,0,12,0" 
+                                               VerticalAlignment="Center"
+                                               ToolTip="Device Type"/>
+                                    
+                                    <!-- Active status indicator (smaller green dot) -->
+                                    <Ellipse Width="8" Height="8" Margin="0,0,8,0" 
+                                             VerticalAlignment="Center">
+                                        <Ellipse.Style>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="Fill" Value="Gray"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsCurrentlyActive}" Value="True">
+                                                        <Setter Property="Fill" Value="Green"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Ellipse.Style>
+                                    </Ellipse>
+                                    
+                                    <!-- Device name with better text wrapping -->
+                                    <TextBlock Text="{Binding DeviceName}" 
+                                               TextWrapping="Wrap" 
+                                               VerticalAlignment="Center"
+                                               LineHeight="20"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Status" Width="80" 
+                                    DisplayMemberBinding="{Binding DeviceStatus}" />
+                    <GridViewColumn Header="Hotkey" Width="120" 
+                                    DisplayMemberBinding="{Binding AssignedHotkey}" />
+                    <GridViewColumn Header="ID" Width="60" 
+                                    DisplayMemberBinding="{Binding SimplifiedId}" />
+                    <GridViewColumn Header="Remarks" Width="200" 
+                                    DisplayMemberBinding="{Binding UserRemarks}" /> 
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+        <!-- Action Panel above status bar -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0" 
+                Padding="10" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- PayPal Support Section (Left - takes remaining space) -->
+                <Border Grid.Column="0" Background="Transparent" 
+                        Cursor="Hand" 
+                        MouseLeftButtonUp="OnMainPayPalClick"
+                        ToolTip="Support this project"
+                        VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- PayPal Logo -->
+                        <Image Grid.Column="0" Source="/Resources/Paypal.png" 
+                               Width="60" Height="15" 
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+
+                        <!-- Support Text -->
+                        <TextBlock Grid.Column="1" 
+                                   Text="Support this project" 
+                                   FontSize="13" Foreground="#6B7280" 
+                                   VerticalAlignment="Center" FontWeight="Medium"/>
+                    </Grid>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F0F8FF"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                </Border>
+
+                <!-- Settings Button -->
+                <Button Grid.Column="1" Content="Settings" 
+                        Width="85" Height="28" Margin="0,0,8,0"
+                        FontSize="12" FontWeight="Medium"
+                        Background="White" BorderBrush="#D1D5DB" BorderThickness="1" 
+                        Foreground="#374151"
+                        Click="OnSettingsClick">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                CornerRadius="5" 
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F3F4F6"/>
+                                                <Setter Property="BorderBrush" Value="#9CA3AF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#E5E7EB"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- About Button -->
+                <Button Grid.Column="2" Content="About" 
+                        Width="70" Height="28"
+                        FontSize="12" FontWeight="Medium"
+                        Background="#3B82F6" BorderBrush="#3B82F6" BorderThickness="1" 
+                        Foreground="White"
+                        Click="OnAboutClick">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                CornerRadius="5" 
+                                                Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                              VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#2563EB"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#1D4ED8"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Status area with hidden devices info -->
+        <StackPanel Grid.Row="3" Margin="0,5,0,0">
+            <!-- Main status bar -->
+            <StatusBar>
+                <StatusBarItem>
+                    <TextBlock Text="{Binding CurrentStatusMessage}" />
+                </StatusBarItem>
+            </StatusBar>
+
+            <!-- Hidden devices count line -->
+            <StatusBar Visibility="{Binding HiddenDevicesMessageVisibility}" Background="Transparent">
+                <StatusBarItem>
+                    <TextBlock Text="{Binding HiddenDevicesMessage}" 
+                               FontSize="11" 
+                               Foreground="#666" 
+                               FontStyle="Italic"/>
+                </StatusBarItem>
+            </StatusBar>
+        </StackPanel>
+
+
+    </Grid>
+</Window>

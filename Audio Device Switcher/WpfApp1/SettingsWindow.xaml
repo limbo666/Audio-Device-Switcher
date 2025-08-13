@@ -1,0 +1,381 @@
+﻿<Window x:Class="AudioDeviceSwitcher.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Audio Device Switcher - Settings" Height="500" Width="600"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        Background="#F8F9FA"
+        Icon="/Resources/Icon.ico">
+    <Grid>
+        <!-- Tab control with custom styling -->
+        <TabControl Name="MainTabControl" Margin="0" Background="#F8F9FA" BorderThickness="0">
+            <TabControl.Style>
+                <Style TargetType="TabControl">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabControl">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Tab headers -->
+                                    <Border Grid.Row="0" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
+                                        <TabPanel IsItemsHost="True" Margin="15,8,15,0"/>
+                                    </Border>
+
+                                    <!-- Tab content -->
+                                    <ContentPresenter Grid.Row="1" ContentSource="SelectedContent"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Style>
+
+            <!-- Settings Tab -->
+            <TabItem Header="Settings" Name="SettingsTab">
+                <TabItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚙️" FontSize="13" Margin="0,0,6,0"/>
+                            <TextBlock Text="Settings" FontSize="13" FontWeight="Medium"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabItem.HeaderTemplate>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="25,20,25,20">
+                        <!-- Startup Settings -->
+                        <TextBlock Text="Startup" FontSize="14" FontWeight="SemiBold" 
+                                   Foreground="#2C3E50" Margin="0,0,0,12"/>
+
+                        <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
+                                CornerRadius="6" Padding="15" Margin="0,0,0,20">
+                            <StackPanel>
+                                <CheckBox Name="StartInTrayCheckBox" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="Start minimized to system tray" FontWeight="Medium" FontSize="13"/>
+                                        <TextBlock Text="Launch the application hidden in system tray" 
+                                                   FontSize="11" Foreground="#6B7280" Margin="0,1,0,0"/>
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox Name="StartWithWindowsCheckBox">
+                                    <StackPanel>
+                                        <TextBlock Text="Start with Windows" FontWeight="Medium" FontSize="13"/>
+                                        <TextBlock Text="Automatically launch when Windows starts" 
+                                                   FontSize="11" Foreground="#6B7280" Margin="0,1,0,0"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- User Interface Settings -->
+                        <TextBlock Text="User Interface" FontSize="14" FontWeight="SemiBold" 
+                                   Foreground="#2C3E50" Margin="0,0,0,12"/>
+
+                        <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
+                                CornerRadius="6" Padding="15" Margin="0,0,0,20">
+                            <StackPanel>
+                                <CheckBox Name="SingleClickCheckBox" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <TextBlock Text="Single-click to switch devices" FontWeight="Medium" FontSize="13"/>
+                                        <TextBlock Text="Switch audio devices with single click instead of double-click" 
+                                                   FontSize="11" Foreground="#6B7280" Margin="0,1,0,0"/>
+                                    </StackPanel>
+                                </CheckBox>
+
+                                <CheckBox Name="ShowHiddenCountCheckBox">
+                                    <StackPanel>
+                                        <TextBlock Text="Show hidden devices count" FontWeight="Medium" FontSize="13"/>
+                                        <TextBlock Text="Display number of hidden devices in status area" 
+                                                   FontSize="11" Foreground="#6B7280" Margin="0,1,0,0"/>
+                                    </StackPanel>
+                                </CheckBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Buttons -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Name="ResetButton" Content="Reset to Defaults" 
+                                    Width="120" Height="28" Margin="0,0,12,0" 
+                                    FontSize="11"
+                                    Background="White" BorderBrush="#D1D5DB" BorderThickness="1"
+                                    Click="OnResetClick">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            CornerRadius="5" 
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#F3F4F6"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Name="SaveButton" Content="Save Settings" 
+                                    Width="100" Height="28" 
+                                    FontSize="11" FontWeight="Medium"
+                                    Background="#3B82F6" BorderBrush="#3B82F6" BorderThickness="1" 
+                                    Foreground="White"
+                                    Click="OnSaveClick" IsDefault="True">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}" 
+                                                            CornerRadius="5" 
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" 
+                                                                          VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="Background" Value="#1D4ED8"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Hidden Devices Tab -->
+            <TabItem Header="Hidden Devices" Name="HiddenDevicesTab">
+                <TabItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="👁" FontSize="13" Margin="0,0,6,0"/>
+                            <TextBlock Text="Hidden Devices" FontSize="13" FontWeight="Medium"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabItem.HeaderTemplate>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="25,20,25,20">
+                        <!-- Header -->
+                        <TextBlock Text="Device Visibility Management" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="#2C3E50" Margin="0,0,0,8" TextAlignment="Center"/>
+
+                        <TextBlock Text="Manage which audio devices are visible in the main device list" 
+                                   FontSize="12" Foreground="#6B7280" TextAlignment="Center"
+                                   Margin="0,0,0,25"/>
+
+                        <!-- Instructions -->
+                        <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" 
+                                CornerRadius="6" Padding="12" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="💡 About Hidden Devices:" FontWeight="SemiBold" 
+                                           Foreground="#0369A1" Margin="0,0,0,6" FontSize="12"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#0369A1" LineHeight="16">
+                                    <Run Text="• Hidden devices don't appear in the main device list"/>
+                                    <LineBreak/>
+                                    <Run Text="• You can hide devices by right-clicking them in the main window"/>
+                                    <LineBreak/>
+                                    <Run Text="• Use this panel to restore hidden devices back to the list"/>
+                                    <LineBreak/>
+                                    <Run Text="• Device settings (hotkeys, remarks) are preserved when hidden"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Hidden Devices Management -->
+                        <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
+                                CornerRadius="6" Padding="20">
+                            <StackPanel>
+                                <!-- Header with count -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                    <TextBlock Text="Currently Hidden Devices" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                                    <TextBlock Name="HiddenCountText" FontSize="12" Foreground="#6B7280" 
+                                               VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                </StackPanel>
+
+                                <!-- Hidden devices list -->
+                                <StackPanel Name="HiddenDevicesPanel">
+                                    <!-- Dynamic content will be added here -->
+                                </StackPanel>
+
+                                <!-- No hidden devices message -->
+                                <Border Name="NoHiddenDevicesBorder" Background="#F9FAFB" BorderBrush="#E5E7EB" 
+                                        BorderThickness="1" CornerRadius="4" Padding="15" Visibility="Collapsed">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🎉" FontSize="24" TextAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="No devices are currently hidden." 
+                                                   FontSize="13" Foreground="#6B7280" TextAlignment="Center" FontWeight="Medium"/>
+                                        <TextBlock Text="All your audio devices are visible in the main list." 
+                                                   FontSize="11" Foreground="#9CA3AF" TextAlignment="Center" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Show all button -->
+                                <Button Name="ShowAllDevicesButton" Content="Restore All Hidden Devices" 
+                                        Height="32" FontSize="12" FontWeight="SemiBold"
+                                        Background="#F59E0B" BorderBrush="#F59E0B" BorderThickness="1" 
+                                        Foreground="White" Margin="0,15,0,0"
+                                        Click="OnShowAllDevicesClick"
+                                        Visibility="Collapsed">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" 
+                                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                                CornerRadius="6" 
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#D97706"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#B45309"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Supporter Tab (conditional visibility) -->
+            <TabItem Header="Supporter" Name="SupporterTab">
+                <TabItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="💝" FontSize="13" Margin="0,0,6,0"/>
+                            <TextBlock Text="Supporter" FontSize="13" FontWeight="Medium"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TabItem.HeaderTemplate>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="25,20,25,20">
+                        <!-- Header -->
+                        <TextBlock Text="Supporter Registration" FontSize="16" FontWeight="SemiBold" 
+                                   Foreground="#2C3E50" Margin="0,0,0,8" TextAlignment="Center"/>
+
+                        <TextBlock Text="Thank you for supporting Audio Device Switcher!" 
+                                   FontSize="12" Foreground="#6B7280" TextAlignment="Center"
+                                   Margin="0,0,0,20"/>
+
+                        <!-- Instructions -->
+                        <Border Background="#FEF3C7" BorderBrush="#F59E0B" BorderThickness="1" 
+                                CornerRadius="6" Padding="12" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="💡 How to get your supporter key:" FontWeight="SemiBold" 
+                                           Foreground="#92400E" Margin="0,0,0,6" FontSize="12"/>
+                                <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="#92400E" LineHeight="16">
+                                    <Run Text="1. Make a donation using the PayPal button"/>
+                                    <LineBreak/>
+                                    <Run Text="2. I will receive your email automatically"/>
+                                    <LineBreak/>
+                                    <Run Text="3. I will send you a unique supporter key for your email"/>
+                                    <LineBreak/>
+                                    <Run Text="4. Enter your email and key below to disable donation reminders"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Registration Form -->
+                        <Border Background="White" BorderBrush="#E5E7EB" BorderThickness="1" 
+                                CornerRadius="6" Padding="20">
+                            <StackPanel>
+                                <!-- Email Field -->
+                                <TextBlock Text="Email Address" FontWeight="SemiBold" 
+                                           Foreground="#374151" Margin="0,0,0,6" FontSize="12"/>
+                                <TextBox Name="EmailTextBox" Height="28" FontSize="12" 
+                                         Padding="8,6" Margin="0,0,0,15"
+                                         BorderBrush="#D1D5DB" BorderThickness="1"
+                                         ToolTip="Enter the email address you used for donation"/>
+
+                                <!-- Key Field -->
+                                <TextBlock Text="Supporter Key" FontWeight="SemiBold" 
+                                           Foreground="#374151" Margin="0,0,0,6" FontSize="12"/>
+                                <TextBox Name="KeyTextBox" Height="28" FontSize="12" 
+                                         Padding="8,6" Margin="0,0,0,20"
+                                         BorderBrush="#D1D5DB" BorderThickness="1"
+                                         ToolTip="Enter the supporter key sent to your email"/>
+
+                                <!-- Register Button -->
+                                <Button Name="RegisterButton" Content="Register as Supporter" 
+                                        Height="32" FontSize="12" FontWeight="SemiBold"
+                                        Background="#059669" BorderBrush="#059669" BorderThickness="1" 
+                                        Foreground="White" Margin="0,0,0,12"
+                                        Click="OnRegisterClick">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" 
+                                                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                                                CornerRadius="5" 
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#047857"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#065F46"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Status Text -->
+                                <TextBlock Name="StatusTextBlock" TextAlignment="Center" 
+                                           FontSize="11" Margin="0,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
