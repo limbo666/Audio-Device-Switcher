@@ -3,11 +3,32 @@
 A lightweight Windows application for quick and easy switching between audio output devices. <br> 
 Features global hotkeys, system tray operation, and external program control via Windows Registry. <br>
 This utility simplifies the audio output device switching, which for some reason Windows have located in a "strange place" in the audio tray icon.<br>
-<img width="587" height="456" alt="image" src="https://github.com/user-attachments/assets/2743a8eb-637b-4b45-829f-6217d89c3624" /><br>
 
-<img width="586" height="491" alt="image" src="https://github.com/user-attachments/assets/e30566a4-7759-446d-9cf5-638aafa1869b" /><br>
 
-<img width="277" height="275" alt="image" src="https://github.com/user-attachments/assets/33fd0e18-26f8-47d7-ac16-a42b7cc6696d" /><br>
+<div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+
+  <img src="https://github.com/user-attachments/assets/2743a8eb-637b-4b45-829f-6217d89c3624" 
+       alt="Image 1" 
+       width="293" height="228"
+       style="object-fit: contain; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+
+  <img src="https://github.com/user-attachments/assets/e30566a4-7759-446d-9cf5-638aafa1869b" 
+       alt="Image 2" 
+       width="293" height="228"
+       style="object-fit: contain; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+
+  <img src="https://github.com/user-attachments/assets/33fd0e18-26f8-47d7-ac16-a42b7cc6696d" 
+       alt="Image 3" 
+       width="150" height="150"
+       style="object-fit: contain; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+
+  <img src="https://github.com/user-attachments/assets/9dfed9fd-bddb-4c29-a02e-171556a6227b" 
+       alt="Image 4" 
+       width="250" height="250"
+       style="object-fit: contain; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+
+</div>
+
 
 
 ## Features
@@ -138,7 +159,10 @@ Device IDs are shown in the "ID" column of the main application window.
 
 Audio Device Switcher is **free and open source**. If you find it useful, please consider supporting its development:
 
-[Show Image](https://www.paypal.com/donate/?hosted_button_id=658JPTR7W5LNL)
+
+<a href="[https://example.com](https://www.paypal.com/donate/?hosted_button_id=658JPTR7W5LNL)">
+  <img src="https://github.com/user-attachments/assets/6410c0f3-d879-4f21-94ec-89c89b8e9e0a" alt="Alt text" height="100">
+</a>
 
 Your support helps:
 
